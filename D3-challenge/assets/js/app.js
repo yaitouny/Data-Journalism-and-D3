@@ -68,7 +68,7 @@ function yScale(data, chosenYAxis) {
 function renderXAxes(newXScale, xAxis) {
   var bottomAxis = d3.axisBottom(newXScale);
 
-  xAxis.transition().duration(1000).call(bottomAxis);
+  xAxis.transition().duration(2000).call(bottomAxis);
 
   return xAxis;
 }
@@ -76,7 +76,7 @@ function renderXAxes(newXScale, xAxis) {
 function renderYAxes(newYScale, yAxis) {
   var leftAxis = d3.axisLeft(newYScale);
 
-  yAxis.transition().duration(1000).call(leftAxis);
+  yAxis.transition().duration(2000).call(leftAxis);
 
   return yAxis;
 }
@@ -86,7 +86,7 @@ function renderYAxes(newYScale, yAxis) {
 function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
   circlesGroup
     .transition()
-    .duration(1000)
+    .duration(2000)
     .attr("cx", (d) => newXScale(d[chosenXAxis]));
 
   return circlesGroup;
@@ -95,7 +95,7 @@ function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
 function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
   circlesGroup
     .transition()
-    .duration(1000)
+    .duration(2000)
     .attr("cy", (d) => newYScale(d[chosenYAxis]));
 
   return circlesGroup;
@@ -139,10 +139,12 @@ function updateToolTipCircle(chosenXAxis, chosenYAxis, circlesGroup) {
   circlesGroup
     .on("mouseover", function (data) {
       toolTip.show(data);
-      d3.select(this).transition().duration(1000).attr("fill", "purple");
+      d3.select(this).transition().duration(200);
+      // .attr("fill", "purple")
     })
     .on("mouseout", function (data) {
       toolTip.hide(data);
+      // d3.select(this).attr("fill", "teal");
     });
 
   return circlesGroup;
@@ -191,9 +193,14 @@ function updateToolTipText(chosenXAxis, chosenYAxis, textGroup) {
   var toolTip = d3
     .tip()
     .attr("class", "tooltip")
-    .offset([80, -60])
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+    // .offset([90, 90])
     .html(function (d) {
-      return `${d.state}<br>${xlabel}: ${d[chosenXAxis]} & ${ylabel}: ${d[chosenYAxis]}`;
+      return `${d.state}<br>${xlabel}: ${d[chosenXAxis]}%<br>${ylabel}: ${d[chosenYAxis]}%`;
     });
 
   textGroup.call(toolTip);
@@ -204,17 +211,15 @@ function updateToolTipText(chosenXAxis, chosenYAxis, textGroup) {
 
       d3.select(this)
         .transition()
-        .duration(1000)
-        .attr("fill", "black")
+        .duration(200)
+        .attr("fill", "purple")
         .attr("cursor", "default")
         .attr("r", "35");
     })
     // onmouseout event
-    .on("mouseout", function (data, index) {
+    .on("mouseout", function (data) {
       toolTip.hide(data);
-
-      d3.select(this).transition().duration(1000).attr("fill", "#fff");
-      // .attr("r", "20");
+      d3.select(this).attr("fill", "teal");
     });
 
   return textGroup;
@@ -267,8 +272,9 @@ d3.csv("assets/data/data.csv").then(function (tdata, err) {
     .attr("cx", (d) => xLinearScale(d[chosenXAxis]))
     .attr("cy", (d) => yLinearScale(d[chosenYAxis]))
     .attr("r", 20)
-    .attr("fill", "pink")
-    .attr("opacity", "0.75");
+    .attr("fill", "teal")
+    .style("stroke", "black")
+    .attr("opacity", "0.7");
 
   var textGroup = overallPoints
     // .selectAll("circle")
@@ -278,7 +284,8 @@ d3.csv("assets/data/data.csv").then(function (tdata, err) {
     .text((d) => d.abbr)
     .attr("dx", (d) => xLinearScale(d[chosenXAxis]))
     .attr("dy", (d) => yLinearScale(d[chosenYAxis]))
-    .attr("r", 20)
+    .style("font-size", "10px")
+    // .style("text-align", "center")
     .attr("fill", "#fff")
     .attr("class", "stateText");
 
@@ -349,7 +356,7 @@ d3.csv("assets/data/data.csv").then(function (tdata, err) {
 
   circlesGroup = updateToolTipCircle(chosenXAxis, chosenYAxis, circlesGroup);
   // textGroup
-  // textGroup = updateToolTipText(chosenXAxis, chosenYAxis, textGroup);
+  textGroup = updateToolTipText(chosenXAxis, chosenYAxis, textGroup);
 
   xlabelsGroup.selectAll("text").on("click", function () {
     // get value of selection
