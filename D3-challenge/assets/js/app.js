@@ -212,14 +212,13 @@ function updateToolTipText(chosenXAxis, chosenYAxis, textGroup) {
       d3.select(this)
         .transition()
         .duration(200)
-        .attr("fill", "purple")
+        // .attr("fill", "purple")
         .attr("cursor", "default")
         .attr("r", "35");
     })
     // onmouseout event
     .on("mouseout", function (data) {
       toolTip.hide(data);
-      d3.select(this).attr("fill", "teal");
     });
 
   return textGroup;
@@ -271,7 +270,7 @@ d3.csv("assets/data/data.csv").then(function (tdata, err) {
     .append("circle")
     .attr("cx", (d) => xLinearScale(d[chosenXAxis]))
     .attr("cy", (d) => yLinearScale(d[chosenYAxis]))
-    .attr("r", 20)
+    .attr("r", 15)
     .attr("fill", "teal")
     .style("stroke", "black")
     .attr("opacity", "0.7");
