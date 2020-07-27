@@ -101,6 +101,61 @@ function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
   return circlesGroup;
 }
 
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+  var xlabel;
+
+  if (chosenXAxis === "poverty") {
+    xlabel = "In Poverty (%)";
+  } else if (chosenXAxis === "age") {
+    xlabel = "Age (Median)";
+  } else {
+    xlabel = "Household Income (Median)";
+  }
+
+  var ylabel;
+
+  if (chosenYAxis === "healthcare") {
+    ylabel = "Lacks Healthcare (%)";
+  } else if (chosenYAxis === "smokes") {
+    ylabel = "Smokes (%)";
+  } else {
+    ylabel = "Obese (%)";
+  }
+
+  var toolTip = d3
+    .tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function (d) {
+      return `${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`;
+    });
+
+  circlesGroup.call(toolTip);
+
+  circlesGroup
+    .on("mouseover", function (data) {
+      toolTip.show(data);
+
+      d3.select(this)
+        .transition()
+        .duration(1000)
+        .attr("fill", "pink")
+        .attr("r", "35");
+    })
+    // onmouseout event
+    .on("mouseout", function (data, index) {
+      toolTip.hide(data);
+
+      d3.select(this)
+        .transition()
+        .duration(1000)
+        .attr("fill", "#89bdd3")
+        .attr("r", "20");
+    });
+
+  return circlesGroup;
+}
+
 // Retrieve data from the CSV file and execute everything below
 d3.csv("assets/data/data.csv")
   .then(function (tdata, err) {
